@@ -22,7 +22,14 @@ class Api::V1::SuppliersController < ApplicationController
   end
 
   def update
-
+    if @supplier
+      @supplier.update(supplier_params)
+      render json: { message: 'Updated Successfully' }, status: 200
+    elsif @supplier.errors.any?
+      render json: @supplier.errors, status: 400
+    else
+      render json: { message: 'Record not found' }, status: 400
+    end
   end
 
   def destroy
