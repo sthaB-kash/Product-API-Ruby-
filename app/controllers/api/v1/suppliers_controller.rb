@@ -1,17 +1,17 @@
 class Api::V1::SuppliersController < ApplicationController
+  before_action :find_supplier, except: %i[index create]
+
   def index
     @suppliers = Supplier.all
     render json: @suppliers
   end
 
   def show
-    begin
-      @supplier = Supplier.find(params[:id])
-    rescue ActiveRecord::RecordNotFound => e
-      puts e, e.inspect
-      @supplier = { message: 'not found' }
+    if @supplier.present?
+      render json: @supplier, status: 200
+    else
+      render json: { message: 'not found' }, status: 400
     end
-    render json: @supplier
   end
 
   def create
@@ -33,5 +33,9 @@ class Api::V1::SuppliersController < ApplicationController
 
   def supplier_params
     params.require(:supplier).permit(:name, :address, :contact)
+  end
+
+  def find_supplier
+    @supplier = Supplier.find_by_id(params[:id])
   end
 end
