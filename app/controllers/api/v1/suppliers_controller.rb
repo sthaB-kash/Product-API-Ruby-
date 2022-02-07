@@ -1,5 +1,6 @@
 class Api::V1::SuppliersController < ApplicationController
   before_action :find_supplier, except: %i[index create]
+  before_action :authenticate_user!
 
   def index
     @suppliers = Supplier.all
